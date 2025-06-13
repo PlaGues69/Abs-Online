@@ -2,30 +2,30 @@ import { useState } from "react";
 import { registerUserService } from "../services/authService";
 
 export const useRegisterUser = () => {
-    const [isLoading, setIsLoading] = useState(false);
+    const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
-    const [data, setData] = useState(null);
+    const [responseData, setResponseData] = useState(null);
 
     const register = async (formData) => {
-        setIsLoading(true);
-        setData(null);
+        setLoading(true);
+        setResponseData(null);
         setError(null);
         try {
             const response = await registerUserService(formData);
-            setData(response);
+            setResponseData(response);
             return response;
         } catch (err) {
             setError(err);
             return null;
         } finally {
-            setIsLoading(false);
+            setLoading(false);
         }
     };
 
     return {
         register,
-        isLoading,
-        data,
+        isLoading: loading,
+        data: responseData,
         error,
     };
 };

@@ -1,49 +1,48 @@
-import { createContext, useState, useEffect } from "react";
+import { createContext, useEffect, useState } from "react";
 
 export const AuthContext = createContext();
 
-const AuthContextProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+const AuthProvider = ({ children }) => {
+  const [currentUser, setCurrentUser] = useState(null);
+  const [isBusy, setIsBusy] = useState(true);
 
-  const login = (userData, token) => {
-    setLoading(true);
-    localStorage.setItem("token", token);
-    localStorage.setItem("user", JSON.stringify(userData));
-    setUser(userData);
-    setLoading(false);
+  const handleLogin = (userInfo, authToken) => {
+    setIsBusy(true);
+    localStorage.setItem("token", authToken);
+    localStorage.setItem("user", JSON.stringify(userInfo));
+    setCurrentUser(userInfo);
+    setIsBusy(false);
   };
 
-  const logout = () => {
-    setLoading(true);
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    setUser(null);
-    setLoading(false);
+  const handleLogout = () => {
+    setIsBusy(true);
+    localStorage.clear(); // clears both 'user' and 'token'
+    setCurrentUser(null);
+    setIsBusy(false);
   };
 
   useEffect(() => {
-    setLoading(true);
-    const token = localStorage.getItem("token");
-    const storedUser = localStorage.getItem("user");
+    const storedToken = localStorage.getItem("token");
+    const userJSON = localStorage.getItem("user");
 
-    if (token && storedUser) {
-      setUser(JSON.parse(storedUser));
+    if (storedToken && userJSON) {
+      setCurrentUser(JSON.parse(userJSON));
     } else {
-      logout();
+      handleLogout();
     }
 
-    setLoading(false);
+    setIsBusy(false);
   }, []);
 
   return (
     <AuthContext.Provider
       value={{
-        user,
-        login,
-        logout,
-        loading,
-        isAuthenticated: user !== null,
+        user: currentUser,
+        setUser: setCurrentUser, // ✅ Added this line
+        login: handleLogin,
+        logout: handleLogout,
+        loading: isBusy,
+        isAuthenticated: !!currentUser,
       }}
     >
       {children}
@@ -51,4 +50,4 @@ const AuthContextProvider = ({ children }) => {
   );
 };
 
-export default AuthContextProvider;
+export default AuthProvider;

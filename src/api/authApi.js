@@ -1,4 +1,9 @@
-import axios from "./api"; // or directly from axios if not using axios.js wrapper
+import httpClient from "./api"; 
 
-export const loginUserApi = (data) => axios.post("/auth/login", data);
-export const registerUserApi = (data) => axios.post("/auth/register", data);
+export const loginUserApi = (credentials) => {
+  return httpClient.post("/auth/login", credentials);
+};
+
+export const registerUserApi = (formData) => {
+  return httpClient.post("/auth/register", formData);
+};

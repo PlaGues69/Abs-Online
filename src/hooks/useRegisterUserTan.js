@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 export const useRegisterUser = () => {
     return useMutation({
         mutationFn: registerUserService,
-        mutationKey: ["register"],
+        mutationKey: ["register"], // mutation key unchanged
         onSuccess: (data) => {
             toast.success(data?.message || "Registration Success");
         },

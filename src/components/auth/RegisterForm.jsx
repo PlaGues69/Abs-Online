@@ -22,25 +22,49 @@ export default function RegisterForm() {
     }
 
     return (
-        <div>
-            RegisterForm
-            <form onSubmit={handleSubmit}>
-                <label>First Name</label>
-                <input name="firstName" value={formData.firstName} onChange={handleChange} />
+        <div className="register-form-container">
+            <h3 className="register-form-title">RegisterForm</h3>
+            <form onSubmit={handleSubmit} className="register-form">
+                <label className="register-label">First Name</label>
+                <input
+                    name="firstName"
+                    value={formData.firstName}
+                    onChange={handleChange}
+                    className="register-input"
+                />
 
-                <label>Last Name</label>
-                <input name="lastName" value={formData.lastName} onChange={handleChange} />
+                <label className="register-label">Last Name</label>
+                <input
+                    name="lastName"
+                    value={formData.lastName}
+                    onChange={handleChange}
+                    className="register-input"
+                />
 
-                <label>Email</label>
-                <input name="email" type="email" value={formData.email} onChange={handleChange} />
+                <label className="register-label">Email</label>
+                <input
+                    name="email"
+                    type="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    className="register-input"
+                />
 
-                <label>Password</label>
-                <input name="password" type="password" value={formData.password} onChange={handleChange} />
+                <label className="register-label">Password</label>
+                <input
+                    name="password"
+                    type="password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    className="register-input"
+                />
 
-                <button type="submit">Register</button>
+                <button type="submit" className="register-button" disabled={isPending}>
+                    {isPending ? "Registering..." : "Register"}
+                </button>
 
-                {error && <p>{error.message}</p>}
-                {data && <p>{data.message}</p>}
+                {error && <p className="error-message">{error.message}</p>}
+                {data && <p className="success-message">{data.message}</p>}
             </form>
         </div>
     )

@@ -9,7 +9,7 @@ export const useLoginUser = () => {
 
     return useMutation({
         mutationFn: loginUserService,
-        mutationKey: ["login_key"],
+        mutationKey: ["login_key"], // mutation key unchanged
         onSuccess: (data) => {
             login(data?.data, data?.token);
             toast.success(data?.message || "Login Success");
