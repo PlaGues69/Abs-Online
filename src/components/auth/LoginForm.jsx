@@ -1,15 +1,15 @@
-import React from 'react'
-import { useFormik } from "formik"
-import * as Yup from "yup"
-import { useLoginUser } from '../../hooks/useLoginUser'
+import React from 'react';
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import { useLoginUser } from '../../hooks/useLoginUser.js';  // Explicitly add .js for useLoginUser hook
 
 export default function LoginForm() {
-    const { mutate, data, error, isPending } = useLoginUser()
+    const { mutate, data, error, isPending } = useLoginUser();
 
     const validationSchema = Yup.object({
         email: Yup.string().email("Invalid email").required("Please fill email"),
         password: Yup.string().min(8, "Password needs 8 characters").required("Please fill password")
-    })
+    });
 
     const formik = useFormik({
         initialValues: {
@@ -18,9 +18,9 @@ export default function LoginForm() {
         },
         validationSchema,
         onSubmit: (values) => {
-            mutate(values)
+            mutate(values);
         }
-    })
+    });
 
     return (
         <div className="login-form-container">
@@ -60,5 +60,5 @@ export default function LoginForm() {
                 {data && <p className="success-message">{data.message}</p>}
             </form>
         </div>
-    )
+    );
 }

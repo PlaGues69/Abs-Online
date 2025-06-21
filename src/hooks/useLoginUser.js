@@ -1,8 +1,8 @@
 import { useMutation } from "@tanstack/react-query";
-import { loginUserService } from "../services/authService";
+import { loginUserService } from "../services/authService.js";  // Explicitly add .js for authService
 import { toast } from "react-toastify";
 import { useContext } from "react";
-import { AuthContext } from "../auth/AuthProvider";
+import { AuthContext } from "../auth/AuthProvider.jsx";  // Explicitly add .jsx for AuthProvider
 
 export const useLoginUser = () => {
     const { login } = useContext(AuthContext);

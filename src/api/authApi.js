@@ -1,4 +1,4 @@
-import httpClient from "./api"; 
+import httpClient from "./api.js"; 
 
 export const loginUserApi = (credentials) => {
   return httpClient.post("/auth/login", credentials);

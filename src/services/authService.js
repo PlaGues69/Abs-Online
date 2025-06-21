@@ -1,4 +1,4 @@
-import { loginUserApi, registerUserApi } from "../api/authApi";
+import { loginUserApi, registerUserApi } from "../api/authApi.js";  // Add .js extension
 
 export const registerUserService = async (formData) => {
     try {

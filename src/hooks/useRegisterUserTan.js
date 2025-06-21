@@ -1,5 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
-import { registerUserService } from "../services/authService";
+import { registerUserService } from "../services/authService.js";  
 import { toast } from "react-toastify";
 
 export const useRegisterUser = () => {
