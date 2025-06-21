@@ -1,14 +1,16 @@
 const mongoose = require("mongoose");
 
-const connectToDatabase = async () => {
-    try {
-        const dbUri = "mongodb://localhost:27017/Abs_backend";
-
-        await mongoose.connect(dbUri); // No need for options anymore
-        console.log("MongoDB connected successfully");
-    } catch (error) {
-        console.error("Database connection failed:", error.message);
-    }
+const connectDB = async () => {
+  try {
+    await mongoose.connect(process.env.MONGO_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+    console.log("MongoDB connected");
+  } catch (err) {
+    console.error("MongoDB connection error:", err.message);
+    process.exit(1);
+  }
 };
 
-module.exports = connectToDatabase;
+module.exports = connectDB;
