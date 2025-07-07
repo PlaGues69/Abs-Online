@@ -5,7 +5,7 @@ const { v4: generateUuid } = require("uuid");
 
 // Register a new user
 exports.signUp = async (req, res) => {
-    const { email, firstName, lastName, password } = req.body;
+    const { email, firstName, lastName, password, isAdmin } = req.body;
 
     if (!email || !firstName || !lastName || !password) {
         return res.status(400).json({
@@ -32,6 +32,7 @@ exports.signUp = async (req, res) => {
             firstName,
             lastName,
             password: encryptedPassword,
+            isAdmin: !!isAdmin, 
         });
 
         await userRecord.save();
