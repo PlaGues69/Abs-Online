@@ -14,10 +14,10 @@ const {
     checkAdminRole,
 } = require("../../middlewares/authorizedUsers");
 
-// ✅ Create a user (admin only)
+//  Create a user (admin only)
 userRoutes.post("/", verifyAuth, checkAdminRole, registerUser);
 
-// ✅ Get all users (admin only)
+// Get all users (admin only)
 userRoutes.get("/", verifyAuth, checkAdminRole, fetchAllUsers);
 
 // ✅ Get a specific user (admin only)
