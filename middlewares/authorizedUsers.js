@@ -1,5 +1,5 @@
 const jwtLib = require("jsonwebtoken");
-const UserModel = require("../models/User");
+const User = require("../models/User");
 
 exports.verifyAuth = async (req, res, next) => {
     try {
@@ -14,9 +14,16 @@ exports.verifyAuth = async (req, res, next) => {
 
         const extractedToken = tokenHeader.split(" ")[1];
 
+        if (!extractedToken) {
+            return res.status(400).json({
+                success: false,
+                message: "Token not provided",
+            });
+        }
+
         const decodedPayload = jwtLib.verify(extractedToken, process.env.SECRET);
 
-        const foundUser = await UserModel.findById(decodedPayload._id);
+        const foundUser = await User.findById(decodedPayload._id);
 
         if (!foundUser) {
             return res.status(401).json({
@@ -28,6 +35,20 @@ exports.verifyAuth = async (req, res, next) => {
         req.user = foundUser;
         return next();
     } catch (error) {
+        if (error.name === 'JsonWebTokenError') {
+            return res.status(401).json({
+                success: false,
+                message: "Invalid token",
+            });
+        }
+
+        if (error.name === 'TokenExpiredError') {
+            return res.status(401).json({
+                success: false,
+                message: "Token expired",
+            });
+        }
+
         return res.status(500).json({
             success: false,
             message: "Failed to authenticate user",
@@ -36,9 +57,7 @@ exports.verifyAuth = async (req, res, next) => {
 };
 
 exports.checkAdminRole = (req, res, next) => {
-    const userRole = req.user?.role;
-
-    if (userRole === "admin") {
+    if (req.user?.isAdmin) {
         return next();
     }
 

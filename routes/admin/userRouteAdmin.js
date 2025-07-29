@@ -2,11 +2,11 @@ const express = require("express");
 const userRoutes = express.Router();
 
 const {
-    createUser,
-    getUsers,
-    getOneUser,
-    updateOne,
-    deleteOne,
+    registerUser,
+    fetchAllUsers,
+    fetchSingleUser,
+    modifyUser,
+    removeUser,
 } = require("../../controllers/admin/usermanagement");
 
 const {
@@ -14,19 +14,19 @@ const {
     checkAdminRole,
 } = require("../../middlewares/authorizedUsers");
 
-// Route to create a new user
-userRoutes.post("/", createUser);
+// ✅ Create a user (admin only)
+userRoutes.post("/", verifyAuth, checkAdminRole, registerUser);
 
-// Route to get all users (admin only)
-userRoutes.get("/", verifyAuth, checkAdminRole, getUsers);
+// ✅ Get all users (admin only)
+userRoutes.get("/", verifyAuth, checkAdminRole, fetchAllUsers);
 
-// Route to get a specific user by ID
-userRoutes.get("/:id", getOneUser);
+// ✅ Get a specific user (admin only)
+userRoutes.get("/:id", verifyAuth, checkAdminRole, fetchSingleUser);
 
-// Route to update a user by ID
-userRoutes.put("/:id", updateOne);
+// ✅ Update a user (admin only)
+userRoutes.put("/:id", verifyAuth, checkAdminRole, modifyUser);
 
-// Route to delete a user by ID
-userRoutes.delete("/:id", deleteOne);
+// ✅ Delete a user (admin only)
+userRoutes.delete("/:id", verifyAuth, checkAdminRole, removeUser);
 
 module.exports = userRoutes;

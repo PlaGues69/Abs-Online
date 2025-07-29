@@ -1,4 +1,4 @@
-const UserModel = require("../../models/UserModels");
+const User = require("../../models/User");
 const bcryptjs = require("bcrypt");
 const { v4: generateUUID } = require("uuid");
 
@@ -14,7 +14,7 @@ exports.registerUser = async (req, res) => {
     }
 
     try {
-        const userExists = await UserModel.findOne({ email });
+        const userExists = await User.findOne({ email });
         if (userExists) {
             return res.status(400).json({
                 success: false,
@@ -24,7 +24,7 @@ exports.registerUser = async (req, res) => {
 
         const encryptedPassword = await bcryptjs.hash(password, 10);
 
-        const userToCreate = new UserModel({
+        const userToCreate = new User({
             userId: generateUUID(),
             email,
             firstName,
@@ -49,7 +49,7 @@ exports.registerUser = async (req, res) => {
 // Fetch all users
 exports.fetchAllUsers = async (req, res) => {
     try {
-        const allUsers = await UserModel.find({});
+        const allUsers = await User.find({});
         return res.status(200).json({
             success: true,
             message: "Users retrieved",
@@ -67,7 +67,7 @@ exports.fetchAllUsers = async (req, res) => {
 exports.fetchSingleUser = async (req, res) => {
     try {
         const userId = req.params.id;
-        const foundUser = await UserModel.findById(userId);
+        const foundUser = await User.findById(userId);
         return res.status(200).json({
             success: true,
             message: "User found",
@@ -87,7 +87,7 @@ exports.modifyUser = async (req, res) => {
     const { firstName, lastName } = req.body;
 
     try {
-        await UserModel.updateOne(
+        await User.updateOne(
             { _id: userId },
             { $set: { firstName, lastName } }
         );
@@ -108,7 +108,7 @@ exports.removeUser = async (req, res) => {
     const userId = req.params.id;
 
     try {
-        await UserModel.deleteOne({ _id: userId });
+        await User.deleteOne({ _id: userId });
         return res.status(200).json({
             success: true,
             message: "User has been deleted",
