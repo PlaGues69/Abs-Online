@@ -1,21 +1,23 @@
 import { useMutation } from "@tanstack/react-query";
-import { loginUserService } from "../services/authService.js";  // Explicitly add .js for authService
+import { loginUserService } from "../services/authService.js";
 import { toast } from "react-toastify";
 import { useContext } from "react";
-import { AuthContext } from "../auth/AuthProvider.jsx";  // Explicitly add .jsx for AuthProvider
+import { AuthContext } from "../auth/AuthProvider.jsx";
 
 export const useLoginUser = () => {
-    const { login } = useContext(AuthContext);
+  const { setUser } = useContext(AuthContext);
 
-    return useMutation({
-        mutationFn: loginUserService,
-        mutationKey: ["login_key"], // mutation key unchanged
-        onSuccess: (data) => {
-            login(data?.data, data?.token);
-            toast.success(data?.message || "Login Success");
-        },
-        onError: (err) => {
-            toast.error(err?.message || "Login Failed");
-        }
-    });
+  return useMutation({
+    mutationFn: loginUserService,
+    onSuccess: (res) => {
+      toast.success(res.message || "Login success");
+
+      // store token and set user
+      localStorage.setItem("token", res.token);
+      setUser(res.data);  // make sure to save full user object including isAdmin
+    },
+    onError: (err) => {
+      toast.error(err.message || "Login failed");
+    }
+  });
 };

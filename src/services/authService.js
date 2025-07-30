@@ -12,7 +12,13 @@ export const registerUserService = async (formData) => {
 export const loginUserService = async (formData) => {
     try {
         const response = await loginUserApi(formData);
-        return response.data;
+        // Ensure that response includes full user object with isAdmin
+        return {
+            success: response.data.success,
+            message: response.data.message,
+            token: response.data.token,
+            data: response.data.data,  // ✅ includes user info with isAdmin
+        };
     } catch (err) {
         throw err.response?.data || { message: "Login Failed" };
     }

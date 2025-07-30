@@ -1,21 +1,26 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import {
   createPost,
   getAllPosts,
   deletePost,
   updatePost,
-} from "../services/postService";
-import './Css/postPage.css';
+} from "../services/postService.js";
+import { AuthContext } from "../auth/AuthProvider.jsx";
+import "./Css/postPage.css";
 
 export default function PostPage() {
+  const { user } = useContext(AuthContext);         // 👈 logged-in user
   const [posts, setPosts] = useState([]);
+
   const [form, setForm] = useState({
     title: "",
     body: "",
-    author: "",
+    author: user?._id ?? "",                        // default author = current user
   });
+
   const [selectedPostId, setSelectedPostId] = useState(null);
 
+  /* ---------------- Fetch Posts ---------------- */
   const fetchPosts = async () => {
     try {
       const res = await getAllPosts();
@@ -29,23 +34,26 @@ export default function PostPage() {
     fetchPosts();
   }, []);
 
+  /* ---------------- Submit / Update ---------------- */
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       if (selectedPostId) {
         await updatePost(selectedPostId, form);
       } else {
-        await createPost(form);
+        await createPost({ ...form, author: user._id }); // always send current user
       }
-      setForm({ title: "", body: "", author: "" });
-      setSelectedPostId(null); // reset edit state
+      setForm({ title: "", body: "", author: user._id });
+      setSelectedPostId(null);
       fetchPosts();
     } catch (err) {
       console.error("Failed to submit post:", err.message);
     }
   };
 
+  /* ---------------- Delete ---------------- */
   const handleDelete = async (id) => {
+    if (!window.confirm("Delete this post?")) return;
     try {
       await deletePost(id);
       fetchPosts();
@@ -54,18 +62,21 @@ export default function PostPage() {
     }
   };
 
+  /* ---------------- Edit ---------------- */
   const handleEdit = (post) => {
     setForm({
       title: post.title,
       body: post.body,
-      author: post.author?._id ?? post.author,
+      author: user._id, // keep current user id when editing
     });
     setSelectedPostId(post._id);
   };
 
+  /* ---------------- UI ---------------- */
   return (
     <div className="post-page">
       <h2>{selectedPostId ? "✏️ Edit Post" : "📌 Create a New Post"}</h2>
+
       <form onSubmit={handleSubmit} className="post-form">
         <input
           type="text"
@@ -78,19 +89,19 @@ export default function PostPage() {
           value={form.body}
           onChange={(e) => setForm({ ...form, body: e.target.value })}
         ></textarea>
-        <input
-          type="text"
-          placeholder="Author ID"
-          value={form.author}
-          onChange={(e) => setForm({ ...form, author: e.target.value })}
-        />
-        <button type="submit">{selectedPostId ? "Update Post" : "Submit Post"}</button>
+
+        {/* Author ID no longer shown because it's auto-filled */}
+
+        <button type="submit">
+          {selectedPostId ? "Update Post" : "Submit Post"}
+        </button>
+
         {selectedPostId && (
           <button
             type="button"
             onClick={() => {
               setSelectedPostId(null);
-              setForm({ title: "", body: "", author: "" });
+              setForm({ title: "", body: "", author: user._id });
             }}
           >
             Cancel
@@ -105,7 +116,7 @@ export default function PostPage() {
             <h3>{post.title}</h3>
             <p>{post.body}</p>
             <p className="author">
-              Author: {post.author?.username
+              Author: {post.author?.firstName
                 ?? post.author?.email
                 ?? post.author?._id
                 ?? "Unknown"}

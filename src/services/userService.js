@@ -13,7 +13,7 @@ export const getAllUsers = async () => {
 // Delete a user by ID
 export const deleteUser = async (id) => {
   try {
-    const response = await apiClient.delete(`/user/${id}`);
+    const response = await apiClient.delete(`/auth/${id}`);
     return response.data;
   } catch (err) {
     throw err.response?.data || { message: "Failed to delete user" };

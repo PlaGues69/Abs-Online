@@ -1,10 +1,29 @@
-import React from 'react';
+import React, { useEffect, useContext } from 'react';
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { useLoginUser } from '../../hooks/useLoginUser.js';  // Explicitly add .js for useLoginUser hook
+import { useLoginUser } from '../../hooks/useLoginUser.js';
+import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '../../auth/AuthProvider.jsx';
+
 
 export default function LoginForm() {
     const { mutate, data, error, isPending } = useLoginUser();
+    const navigate = useNavigate();
+    const { login } = useContext(AuthContext);
+
+    useEffect(() => {
+        if (data?.success && data?.data) {
+            // Save to context
+            login(data.data, data.token);
+
+            // Admin check
+            if (data.data.isAdmin === true) {
+                navigate("/admin");
+            } else {
+                navigate("/login");
+            }
+        }
+    }, [data, navigate, login]);
 
     const validationSchema = Yup.object({
         email: Yup.string().email("Invalid email").required("Please fill email"),
